@@ -1,4 +1,4 @@
-Tuần 1 – Ngôn ngữ, Cơ sở dữ liệu, Linux
+## Tuần 1 – Ngôn ngữ, Cơ sở dữ liệu, Linux
 
 1\. Vấn đề hiệu năng thường gặp khi truy vấn:
 
@@ -54,8 +54,8 @@ UNION ALL không cần loại bỏ các bản ghi trùng lặp, do đó nó nhan
 
 EXISTS chỉ cần tìm một bản ghi thỏa mãn điều kiện, trong khi COUNT phải đếm tất cả các bản ghi.
 
-1. Cú pháp linux cơ bản(Thao tác trên docker):
-    1. Quản lý File & Thư mục:
+3\. Cú pháp linux cơ bản(Thao tác trên docker):\
+3.1 Quản lý File & Thư mục:
 
 | **Lệnh** | **Mô tả** |
 | --- | --- |
@@ -67,9 +67,9 @@ EXISTS chỉ cần tìm một bản ghi thỏa mãn điều kiện, trong khi CO
 
 Ví dụ: Lệnh ls
 
-![](data:image/png;base64,)
+![ls](image/ls.png)
 
-- 1. Xử lý file (CSV, JSON, Log, Parquet, …)
+3.2 Xử lý file (CSV, JSON, Log, Parquet, …)
 
 | **Lệnh** | **Mô tả** |
 | --- | --- |
@@ -84,9 +84,9 @@ Ví dụ: Lệnh ls
 
 Ví dụ với lệnh head: head -n 10 /data/final_converted_data.csv
 
-![](data:image/png;base64,)
+![head](image/head.png)
 
-- 1. Quản lý process, tài nguyên hệ thống
+3.3 Quản lý process, tài nguyên hệ thống
 
 | **Lệnh** | **Mô tả** |
 | --- | --- |
@@ -97,7 +97,7 @@ Ví dụ với lệnh head: head -n 10 /data/final_converted_data.csv
 | df -h | Xem dung lượng ổ đĩa |
 | ulimit -n | Xem/tăng số lượng file descriptor được mở (xử lý nhiều file song song) |
 
-- 1. Làm việc với dữ liệu từ command-line
+3.4 Làm việc với dữ liệu từ command-line
 
 | **Lệnh** | **Mô tả** |
 | --- | --- |
@@ -107,7 +107,7 @@ Ví dụ với lệnh head: head -n 10 /data/final_converted_data.csv
 | grep, zgrep, egrep | Tìm chuỗi trong file (hữu ích với log, data text) |
 | zcat, gunzip, bzcat, xzcat | Xem file nén .gz, .bz2, .xz không cần giải nén |
 
-- 1. Kết nối và tương tác với Database
+3.5 Kết nối và tương tác với Database
 
 | **Lệnh** | **Mô tả** |
 | --- | --- |
@@ -121,9 +121,9 @@ Ví dụ: Kết nối với mysql
 
 mysql -h host.docker.internal -u root -p
 
-![](data:image/png;base64,)
+![mysql](image/mysql.png)
 
-- 1. Xử lý song song
+3.6 Xử lý song song
 
 | **Lệnh** | **Mô tả** |
 | --- | --- |
@@ -131,7 +131,7 @@ mysql -h host.docker.internal -u root -p
 | parallel | GNU Parallel – cực mạnh cho xử lý hàng loạt file |
 | while read line; do ...; done < file.txt | Duyệt từng dòng xử lý |
 
-Tuần 2 – Kiến trúc Dữ liệu: OLTP, OLAP, CAP, ETL
+## Tuần 2 – Kiến trúc Dữ liệu: OLTP, OLAP, CAP, ETL
 
 1. Kiến trúc OLTP vs OLAP
 
@@ -147,7 +147,7 @@ Tuần 2 – Kiến trúc Dữ liệu: OLTP, OLAP, CAP, ETL
 
 \=> OLAP thường sẽ được xây dựng trước phục vụ việc phân tích trực tuyến từ kho dữ liệu
 
-1. ETL vs ELT
+2. ETL vs ELT
 
 | **Đặc điểm** | **ETL (Trích xuất → Biến đổi → Tải vào)** | **ELT (Trích xuất → Tải vào → Biến đổi)** |
 | --- | --- | --- |
@@ -157,7 +157,7 @@ Tuần 2 – Kiến trúc Dữ liệu: OLTP, OLAP, CAP, ETL
 | **Ưu điểm** | Kiểm soát tốt chất lượng dữ liệu trước khi lưu trữ | Tận dụng hiệu năng tính toán của Data Warehouse |
 | **Nhược điểm** | Yêu cầu hạ tầng riêng để xử lý biến đổi, khó mở rộng với Big Data | Có thể làm chậm Data Warehouse nếu không tối ưu |
 
-1. CAP
+3. CAP
 
 \- CAP là viết tắt của 3 thuộc tính trong một hệ thống phân tán:
 
@@ -175,7 +175,7 @@ Tuần 2 – Kiến trúc Dữ liệu: OLTP, OLAP, CAP, ETL
 | **CP (Consistency + Partition Tolerance)** | Có thể từ chối phản hồi để đảm bảo nhất quán | HBase, MongoDB (cấu hình mạnh) |
 | **AP (Availability + Partition Tolerance)** | Đảm bảo luôn phản hồi, nhưng có thể tạm mất nhất quán | Cassandra, Couchbase, DynamoDB |
 
-1. ACID và BASE
+4. ACID và BASE
 
 **ACID** (thường dùng trong CSDL quan hệ – RDBMS)
 
@@ -198,15 +198,13 @@ Tuần 2 – Kiến trúc Dữ liệu: OLTP, OLAP, CAP, ETL
 
 - BASE đánh đổi tính nhất quán mạnh để đạt được hiệu năng cao và khả năng mở rộng quy mô
 
-Tuần 3 – Big Data & Batch Processing
+## Tuần 3 – Big Data & Batch Processing
 
 1. Kiến trúc của Spark:
 
 \- Dựa trên mô hình điện toán phân tán
 
-![A diagram of a cluster manager
-
-Description automatically generated](data:image/png;base64,)
+![Kiến trúc của Spark](image/kientrucspark.png)
 
 Trong đó:
 
@@ -224,7 +222,7 @@ Trong đó:
 
 \- Đặc điểm của Spark là việc thực hiện lười biếng, có nghĩa là các transformation sẽ được lưu trữ lại cho đến khi có 1 thao tác action xảy ra thì các transformation mới được thực thi
 
-1. RDD:
+2. RDD:
 
 \- Là viết tắt của Resilient Distributed Dataset, nghĩa là Tập dữ liệu phân tán linh hoạt. RDD đại diện cho một tập hợp các phần tử dữ liệu được phân chia và phân phối trên nhiều nút trong một cụm máy tính, cho phép xử lý song song.
 
@@ -234,7 +232,7 @@ Trong đó:
 
 \- Đặc diểm của rdd là tính bất biến của nó vì bản chất đây là tập cấu trúc lưu trữ về logic của dữ liệu => Với mỗi việc thao tác trên dữ liệu sẽ tạo ra 1 RDD mới
 
-1. Parquet/Orc:
+3. Parquet/Orc:
 
 \- Parquet và ORC là hai định dạng lưu trữ dữ liệu theo cột, được tối ưu hóa cho các tác vụ phân tích dữ liệu lớn. Cả hai đều cung cấp khả năng nén và mã hóa hiệu quả, giúp giảm chi phí lưu trữ và cải thiện hiệu suất truy vấn.
 
@@ -256,13 +254,13 @@ Trong đó:
 
 \+ Mặc dù có hiệu suất tốt, ORC có thể ít được hỗ trợ hơn so với Parquet.
 
-1. Hadoop:
+4. Hadoop:
 
 \- Hadoop là một framework mã nguồn mở, được viết bằng Java, dùng để xử lý dữ liệu lớn (Big Data) phân tán trên các cụm máy tính. Nó cho phép lưu trữ và xử lý dữ liệu từ gigabyte đến petabyte, sử dụng mô hình MapReduce để xử lý song song trên nhiều máy tính.
 
 \- Kiến trúc của Hadoop:
 
-![](data:image/png;base64,)
+![Kiến trúc của Hadoop](image/kientruchadoop.png)
 
 Gồm 3 lớp chính:
 
@@ -272,7 +270,7 @@ Gồm 3 lớp chính:
 
 \- HDFS:
 
-![](data:image/png;base64,)
+![HDFS](image/hdfs.png)
 
 - Là hệ thống file phân tán, cung cấp khả năng lưu trữ dữ liệu khổng lồ và tính năng tối ưu hoá việc sử dụng băng thông giữa các node. HDFS có thể được sử dụng để chạy trên một cluster lớn với hàng chục ngàn node.
 - Cho phép truy xuất nhiều ổ đĩa như là 1 ổ đĩa. Nói cách khác, chúng ta có thể sử dụng một ổ đĩa mà gần như không bị giới hạn về dung lượng. Muốn tăng dung lượng chỉ cần thêm node (máy tính) vào hệ thống.
@@ -284,7 +282,7 @@ Gồm 3 lớp chính:
 
 \- Map-Reduce:
 
-![](data:image/png;base64,)
+![mapreduce](image/mapreduce.png)
 
 Map-Reduce là một framework dùng để viết các ứng dụng xử lý song song một lượng lớn dữ liệu có khả năng chịu lỗi cao xuyên suốt hàng ngàn cluster(cụm) máy tính
 
@@ -295,7 +293,7 @@ Map-Reduce thực hiện 2 chức năng chính đó là ****Map**** và ****Redu
 
 \- Yarn:
 
-![](data:image/png;base64,)
+![Yarn](image/yarn.png)
 
 \+ YARN (Yet-Another-Resource-Negotiator) là một framework hỗ trợ phát triển ứng dụng phân tán YARN cung cấp daemons và APIs cần thiết cho việc phát triển ứng dụng phân tán, đồng thời xử lý và lập lịch sử dụng tài nguyên tính toán (CPU hay memory) cũng như giám sát quá trình thực thi các ứng dụng đó.
 
@@ -304,13 +302,11 @@ Map-Reduce thực hiện 2 chức năng chính đó là ****Map**** và ****Redu
 - ResourceManager: Quản lý toàn bộ tài nguyên tính toán của cluster.
 - NodeManger: Giám sát việc sử dụng tài nguyên của container và báo cáo với ResourceManger. Các tài nguyên ở đây là CPU, memory, disk, network,...
 
-1. Kiến trúc của Batch processing:
+5. Kiến trúc của Batch processing:
 
 \- Flow Architect:
 
-![A diagram of a process
-
-Description automatically generated](data:image/png;base64,)
+![Batch](image/batchprocess.png)
 
 \+ Là việc xử lý dữ liệu theo lô, phù hợp cho việc phân tích dữ liệu theo tháng, quý, năm. Luồng kiến trúc mô tả cách mà batch thực hiện. Ở đây khi dữ liệu được thu thập sẽ không được lưu trữ ngay vào khi mà nó sẽ được theo cơ chế lập lịch định kỳ. Nghĩa là dữ liệu thô sẽ được lưu trữ ở file store hoặc message queue cho đến khi đến 1 thời gian định kỳ nào đó mới được xử lý và lưu lại vào kho
 
@@ -334,33 +330,29 @@ Batch processing giúp đảm bảo tính nhất quán của dữ liệu khi x�
 
 Batch processing là một giải pháp hiệu quả để xử lý dữ liệu lớn (big data) và thực hiện các tác vụ như phân tích dữ liệu, báo cáo, và trích xuất, chuyển đổi, tải dữ liệu (ETL).
 
-Tuần 4 – Streaming & Real-time Data
+## Tuần 4 – Streaming & Real-time Data
 
 1. Kiến trúc của Kafka:
 
-![A diagram of a cluster of data
-
-Description automatically generated](data:image/png;base64,)
+![kafka](image/kafka.png)
 
 \- Dựa trên mô hình kênh sự kiện => Rất phù hợp với việc streaming và xử lý yêu cầu thời gian thực
 
 \- Kiến trúc cơ bản của mô hình kênh sự kiện:
 
-![A diagram of a flowchart
-
-Description automatically generated](data:image/png;base64,)
+![kenhsukien](image/kenhsukien.png)
 
 \+ Kênh sự kiện thực chất là một tiến trình làm trung gian cho các tiến trình khác trong hệ thống, nó có một tác tử luôn theo dõi vận hành của các thành viên trong hệ thống. Mỗi thành phần cung cấp dịch vụ sẽ đăng ký với kênh sự kiện, khi một tiến trình thành viên có yêu cầu dịch vụ, nó gửi đến kênh sự kiện, kênh sự kiện sẽ tiếp nhận và tìm kiếm tiến trình có thể đáp ứng yêu cầu và kết nối các thành viên đó để trao đổi với nhau
 
 - Kafka kế thừa cực kỳ tốt mô hình này và đã phát triển thêm việc sử dụng bộ đệm buffer để xử lý yêu cầu của các thành viên giúp tăng khả năng xử lý song song
 
-1. Chi tiết quy trình của Kafka:
+2. Chi tiết quy trình của Kafka:
 
 - Với mỗi broker tưởng đương là 1 server xử lý yêu cầu,
 - Khi producer hay consumer gửi 1 yêu cầu thì chúng sẽ được lưu và vùng buffer.
 - Do áp dụng cơ chế phân tán, các broker sẽ linh hoạt hơn bằng cách nhảy vào vùng buffer này để tiếp nhận xử lý yêu cầu tránh việc phân tải nặng cho 1 broker, đồng thời giúp tăng khả năng dự phòng nóng cho hệ thống
 
-1. Ưu điểm của Kafka:
+3. Ưu điểm của Kafka:
 
 **Giảm thiểu số lượng các thao tác đọc/ghi đĩa vật lý:**
 
@@ -378,11 +370,9 @@ Description automatically generated](data:image/png;base64,)
 
 - Trong một phân vùng, Kafka đảm bảo thứ tự của các thông điệp được giữ nguyên. Bộ đệm giúp Kafka duy trì thứ tự này trong quá trình xử lý.
 
-1. Streaming processing:
+4. Streaming processing:
 
-![A diagram of a message
-
-Description automatically generated](data:image/png;base64,)
+![stream](image/streamprocess.png)
 
 \- Là một mô hình xử lý dữ liệu theo thời gian thực hoặc gần thời gian thực (real-time hoặc near real-time), trong đó dữ liệu được xử lý ngay khi nó được tạo ra hoặc tiếp nhận
 
@@ -397,7 +387,7 @@ Description automatically generated](data:image/png;base64,)
 - Giảm độ trễ: Xử lý dữ liệu **ngay khi nó đến**, giảm thiểu độ trễ so với mô hình xử lý theo lô (batch processing).
 - Khả năng mở rộng và chịu lỗi: Các hệ thống xử lý luồng có khả năng **xử lý khối lượng dữ liệu ngày càng tăng** và có thể **khôi phục sau lỗi**, đảm bảo tính ổn định và liên tục.
 
-Tuần 5 – Workflow & Tích hợp
+## Tuần 5 – Workflow & Tích hợp
 
 1. DAGs & operators:
 
@@ -405,15 +395,13 @@ Tuần 5 – Workflow & Tích hợp
 
 \- Trong DE, DAG là một chu trình xử lý dữ liệu, tại mỗi bước của DAG là việc thực hiện các toán tử trên dữ liệu hay mô tả chu trình của các RDD
 
-1. Chi tiết:
+2. Chi tiết:
 
 2.1. Phân biệt các sự kiện action và transformation:
 
 \- Action là các thao tác như display(), show() dữ liệu và khi action được kích hoạt sẽ sinh ra DAG mô tả chu trình biến đổi của dữ liệu
 
-![A diagram of a job
-
-Description automatically generated](data:image/png;base64,)
+![jobstagetask](image/jobstagetask.png)
 
 \- Ở đây DAG sẽ tưởng đương 1 job thực thi, với mỗi chu trình con sẽ được chia thành các stage dựa trên các wide transformation(group by, join, …), các stage tiếp tục chia nhỏ thành nhiều task con và các task con này được xử lý song song.
 
@@ -437,18 +425,16 @@ Description automatically generated](data:image/png;base64,)
 | Xóa phần tử trùng | distinct() | Wide |
 | Sắp xếp dữ liệu | sortByKey() | Wide |
 
-1. Apache Airflow:
-    1. Định nghĩa:
+3. Apache Airflow:\
+3.1 Định nghĩa:
 
 \- Apache Airflow là một nền tảng **orchestration workflow** mã nguồn mở dùng để **lập lịch, theo dõi và quản lý các pipeline xử lý dữ liệu (ETL/ELT).**
 
 \- Phù hợp với cơ chế xử lý theo lô batch processing
 
-3.2. Kiến trúc:
+3.2 Kiến trúc:
 
-![A screenshot of a computer program
-
-Description automatically generated](data:image/png;base64,)
+![airflow](image/airflow.png)
 
 \- Các thành phần chính:
 
@@ -473,17 +459,13 @@ Description automatically generated](data:image/png;base64,)
 | PostgresOperator | Thực thi SQL trên PostgreSQL |
 | TriggerDagRunOperator | Kích hoạt DAG khác |
 
-1. Apache NiFi & API integration:
-    1. Định nghĩa:
+4. Apache NiFi & API integration:\
+    4.1 Định nghĩa:
+- Apache NiFi là một công cụ **xử lý dữ liệu theo luồng (dataflow)** rất mạnh, đặc biệt hữu ích trong các tình huống **tích hợp API, di chuyển dữ liệu,** và **tự động hóa luồng dữ liệu giữa các hệ thống.**
+- NiFi tốt trong việc xử lý steam và thời gian thực hay stream processing và đặc biệt hỗ trợ việc kéo thả mà không cần code\
+    4.2 Kiến trúc:
 
-Apache NiFi là một công cụ **xử lý dữ liệu theo luồng (dataflow)** rất mạnh, đặc biệt hữu ích trong các tình huống **tích hợp API, di chuyển dữ liệu,** và **tự động hóa luồng dữ liệu giữa các hệ thống.**
-
-- NiFi tốt trong việc xử lý steam và thời gian thực hay stream processing và đặc biệt hỗ trợ việc kéo thả mà không cần code
-    1. Kiến trúc:
-
-**![A screenshot of a computer program
-
-Description automatically generated](data:image/png;base64,)**
+![nifi](image/nifi.png)
 
 \- Các processor phổ biến
 
@@ -505,4 +487,4 @@ Description automatically generated](data:image/png;base64,)**
 | EvaluateJsonPath | Trích dữ liệu từ JSON (trả về từ API) |
 | JoltTransformJSON | Biến đổi cấu trúc JSON |
 
-Tuần 6 – Production Pipeline
+## Tuần 6 – Production Pipeline
