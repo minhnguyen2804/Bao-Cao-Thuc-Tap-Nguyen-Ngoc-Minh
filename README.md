@@ -202,7 +202,7 @@ mysql -h host.docker.internal -u root -p
 
 1. Kiến trúc của Spark:
 
-\- Dựa trên mô hình điện toán phân tán
+\- Dựa trên kiến trúc mô hình điện toán cụm. Do vậy việc yêu cầu đồng nhất về phần cứng là cần thiết, tuy nhiên do việc xây theo cụm thì việc xử lý tính toán rất nhanh do việc kết nối  giữa các máy trong cụm là đường truyền tốc độ cao (thông thường là mạng cục bộ). Nên Spark thường sử dụng cho việc xử lý theo lô là vì thế
 
 ![Kiến trúc của Spark](image/kientrucspark.png)
 
