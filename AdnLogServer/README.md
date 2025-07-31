@@ -74,7 +74,7 @@ Y/C Hãy xây dựng một server có thể trả dữ liệu số user view/cli
   }
 }
 ```
-- Sau khi lưu các file csv vào thư mục /user/minhnn/final_campaign_output6, lưu tiếp chúng về home/minhnn
+- Sau khi lưu các file csv vào thư mục "/user/minhnn/final_campaign_output6", lưu tiếp chúng về "home/minhnn"
 ```bash
 hdfs dfs -ls hdfs://adt-platform-dev-106-254:8120/user/minhnn/final_campaign_output6
 hdfs dfs -get hdfs://adt-platform-dev-106-254:8120/user/minhnn/final_campaign_output6/part-00000-b6e6b721-3328-4130-b114-3ac9e07406c1-c000.csv ~/
