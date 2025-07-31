@@ -8,39 +8,210 @@ Log này là log quảng cáo có chưa một số thông tin cơ bản sau:
 Y/C Hãy xây dựng một server có thể trả dữ liệu số user view/click đối với một campaign hoặc banner theo thời gian cho trước, từ ngày A -> ngày B. Thời gian phản hồi không được phép quá 1 min.
 
 # Các bước thực hiện 
-- Kết nối với server và thực hiện theo các bước sau 
-## Tạo thư mục chứa dự án 
-```bash
-mkdir -p ~/adnlog-api
-cd ~/adnlog-api
-pwd
-```
-- Copy đường dẫn từ terminal
-- Chọn **Upload File** ở góc phải trên
-- Sau đó paste đường dẫn vào **Upload Destination**: /home/minhnn/adnlog-api/
-- Upfile chứa code thực hiện yêu cầu **Drag your files here**:adnlog-api-complete.zip
-- Sau khi load thành công ta thực hiện giải nén
-```bash
-unzip adnlog-api-complete.zip
-```
+## Tiền xử lý dữ liệu từ server
+- Mẫu với dữ liệu campaign
+```scala
+{
+  import org.apache.hadoop.fs.{FileSystem, Path}
+  import org.apache.spark.sql.functions._
+  import org.apache.spark.sql.{DataFrame, SparkSession}
 
-## Setup môi trường 
-```bash
-export SPARK_HOME=/data/spark-3.4.3
-export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
-export PYSPARK_PYTHON=python3
-export PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.10.9.7-src.zip:$PYTHONPATH
-```
+  val spark = SparkSession.builder().getOrCreate()
+  import spark.implicits._
 
-## Cấp quyền thực thi 
-```bash
-chmod +x *.sh
-./setup_environment.sh
-```
+  val fs = FileSystem.get(spark.sparkContext.hadoopConfiguration)
+  val basePath = new Path("hdfs://adt-platform-dev-106-254:8120/data/Parquet/AdnLog")
 
-## Chạy chương trình 
-```bash
-./start_server.sh
+  // Lấy các thư mục ngày (bỏ thư mục ẩn)
+  val dayDirs = fs.listStatus(basePath)
+    .filter(status => status.isDirectory && !status.getPath.getName.startsWith("."))
+    .map(_.getPath)
+
+  // Hàm xử lý từng ngày, trả về Option[DataFrame]
+  def processDay(dayPath: Path): Option[DataFrame] = {
+    val dateStr = dayPath.getName
+	val formattedDate = dateStr.replace('_', '-')
+    val parquetFiles = fs.listStatus(dayPath)
+      .map(_.getPath.toString)
+      .filter(_.endsWith(".parquet"))
+
+    if (parquetFiles.isEmpty) return None
+
+    try {
+      val df = spark.read.parquet(parquetFiles: _*)
+        .select($"guid", $"campaignId", $"click_or_view")
+        .distinct()
+        .withColumn("Date", lit(formattedDate))
+
+      val campaignDF = df
+        .filter($"campaignId".isNotNull && $"campaignId" =!= -1 && $"guid" =!= -1)
+        .select($"guid", $"campaignId", $"click_or_view", $"Date")
+
+      Some(campaignDF)
+
+    } catch {
+      case e: Exception =>
+        println(s"⚠ Lỗi xử lý ngày $formattedDate: ${e.getMessage}")
+        None
+    }
+  }
+
+  // Xử lý toàn bộ ngày
+  val allResults = dayDirs.map(processDay)
+  val campaignDFs = allResults.flatten
+
+  val finalcampaignDF = if (campaignDFs.isEmpty) spark.emptyDataFrame else campaignDFs.reduce(_ union _)
+
+  // Ghi kết quả ra HDFS
+  if (!finalcampaignDF.isEmpty) {
+    finalcampaignDF
+      .write
+      .mode("overwrite")
+      .csv("hdfs://adt-platform-dev-106-254:8120/user/minhnn/final_campaign_output6")
+    println("✅ Đã ghi Campaign ra HDFS.")
+  } else {
+    println("🚫 Không có dữ liệu Campaign.")
+  }
+}
 ```
-# Đọc kết quả 
-- Mở một terminal khác thực hiện truy vấn và xem kết quả
+- Sau khi lưu các file csv vào thư mục /user/minhnn/final_campaign_output6, lưu tiếp chúng về home/minhnn
+```bash
+hdfs dfs -ls hdfs://adt-platform-dev-106-254:8120/user/minhnn/final_campaign_output6
+hdfs dfs -get hdfs://adt-platform-dev-106-254:8120/user/minhnn/final_campaign_output6/part-00000-b6e6b721-3328-4130-b114-3ac9e07406c1-c000.csv ~/
+```
+- Tiếp tục lưu chúng về máy tính cá nhân bằng cách mở powershell và chạy lệnh
+```bash
+tsh scp minhnn@adt-platform-hbase-dev-106-254:/home/minhnn/part-00000-b6e6b721-3328-4130-b114-3ac9e07406c1-c000.csv ./Downloads/dataforbanner/
+```
+## Lưu dữ liệu vào CSDL
+- Sử dụng clickhosue và docker để triển khai CSDL
+- Tạo container cho CSDL
+```bash
+docker run -d --name clickhouse-server -e CLICKHOUSE_DB=default -e CLICKHOUSE_USER=default -e CLICKHOUSE_PASSWORD=123456 -v "C:/Users/LEGION PC/Downloads/dataforbanner:/data" -p 8123:8123 -p 9000:9000 -p 9009:9009 clickhouse/clickhouse-server
+```
+- Lưu ý: Lệnh này đang mount trực tiếp nơi lưu trữ dữ liệu ở máy local cụ thể là trong "C:/Users/LEGION PC/Downloads/dataforbanner/", có thể tùy chỉnh cấu hình này
+- Sau khi tạo thành công, tạo bảng dữ liệu tương ứng, ví dụ ở đây tạo bảng cho campaign
+```sql
+CREATE TABLE adnlog_raw_campaign
+(
+    guid Int64,
+    campaign_id Int32,
+    click_or_view String,
+    event_date Date
+)
+ENGINE = MergeTree
+ORDER BY (event_date, campaign_id, guid)
+```
+- Sau đó vào terminal để insert dữ liệu bằng lệnh:
+```bash
+$files = Get-ChildItem "C:\Users\LEGION PC\Downloads\dataforbanner" -Filter *.csv
+foreach ($file in $files) {
+    $filePath = $file.FullName
+    Write-Host "Importing: $filePath"
+    $dockerCmd = "type `"$filePath`" | docker exec -i clickhouse-server clickhouse-client --password 123456 --query=`"INSERT INTO adnlog_raw_campaign FORMAT CSV`""
+    cmd /c $dockerCmd
+}
+```
+## Tạo app
+-Sử dụng python
+```python
+from fastapi import FastAPI, Query, HTTPException
+from clickhouse_connect import get_client
+from datetime import date
+from typing import Optional
+
+app = FastAPI()
+def get_clickhouse_client():
+    try:
+        client = get_client(
+            host="localhost",
+            port=8123,
+            user="default",
+            password="123456",
+            database="default"
+        )
+        return client
+    except Exception as e:
+        print("⚠️ Không kết nối được CSDL:", e)
+        return None
+
+@app.get("/countforbanner")
+def get_estimated_users(
+    start_date: Optional[date] = Query(..., description="YYYY-MM-DD"),
+    end_date: Optional[date] = Query(..., description="YYYY-MM-DD")
+):
+    if start_date > end_date:
+        raise HTTPException(status_code=400, detail="start_date must be before or equal to end_date")
+    where_clause = ""
+    if start_date and end_date:
+        where_clause = f"WHERE event_date BETWEEN '{start_date}' AND '{end_date}'"
+    elif start_date:
+        where_clause = f"WHERE event_date = '{start_date}'"
+    elif end_date:
+        where_clause = f"WHERE event_date = '{end_date}'"
+    query = f"""
+        SELECT banner_id, click_or_view, uniqHLL12(guid) AS estimated_user_count
+        FROM adnlog_raw_v2
+        {where_clause}
+        GROUP BY banner_id, click_or_view
+        ORDER BY banner_id
+    """
+    client = get_clickhouse_client()
+    result = client.query(query)
+    return result.result_rows
+
+@app.get("/countforcampaign")
+def get_estimated_users(
+    start_date: Optional[date] = Query(..., description="YYYY-MM-DD"),
+    end_date: Optional[date] = Query(..., description="YYYY-MM-DD")
+):
+    if start_date > end_date:
+        raise HTTPException(status_code=400, detail="start_date must be before or equal to end_date")
+    where_clause = ""
+    if start_date and end_date:
+        where_clause = f"WHERE event_date BETWEEN '{start_date}' AND '{end_date}'"
+    elif start_date:
+        where_clause = f"WHERE event_date = '{start_date}'"
+    elif end_date:
+        where_clause = f"WHERE event_date = '{end_date}'"
+    query = f"""
+        SELECT campaign_id, click_or_view, uniqHLL12(guid) AS estimated_user_count
+        FROM adnlog_raw_campaign
+        {where_clause}
+        GROUP BY campaign_id, click_or_view
+        ORDER BY campaign_id
+    """
+    client = get_clickhouse_client()
+    result = client.query(query)
+    return result.result_rows
+```
+- Để chạy app, vào terminal và chạy lệnh
+```bash
+uvicorn main:app --host 0.0.0.0 --port 8000
+```
+## Hướng dẫn sử dụng api
+### 3. API đếm số lượng view/click cho campaign
+
+#### 3.1 Mục đích
+
+Truy vấn số lượng người dùng ước tính theo `campaign_id`.
+
+#### 3.2 Input
+
+| Tên tham số | Kiểu     | Bắt buộc | Mô tả                          |
+|-------------|----------|----------|---------------------------------|
+| `start_date`| `date`   | Không    | Ngày bắt đầu (YYYY-MM-DD)      |
+| `end_date`  | `date`   | Không    | Ngày kết thúc (YYYY-MM-DD)     |
+
+- Nếu truyền cả hai: lọc theo `BETWEEN`.
+- Nếu chỉ truyền 1 trong 2: lọc bằng đúng ngày đó.
+- Nếu không truyền gì: không lọc theo ngày.
+
+### 3.3 Ví dụ gọi API
+- http://localhost:8000/countforcampaign?start_date=2024-12-11&end_date=2024-12-13
+### 3.4 Output
+| Tên trường             | Kiểu dữ liệu | Mô tả                                                                 |
+|------------------------|--------------|-----------------------------------------------------------------------|
+| `campaign_id`          | `int`        | ID của chiến dịch (chỉ có ở `/countforcampaign`)                     |
+| `click_or_view`        | `int`        | Phân loại hành vi: `0` là **view**, `1` là **click**                 |
+| `estimated_user_count` | `int`        | Số lượng người dùng ước tính (sử dụng `uniqHLL12(guid)` trong ClickHouse) |
