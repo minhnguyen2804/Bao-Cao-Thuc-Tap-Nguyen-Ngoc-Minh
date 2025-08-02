@@ -255,5 +255,5 @@ Truy vấn số lượng người dùng ước tính theo `campaign_id`.
 | Tên trường             | Kiểu dữ liệu | Mô tả                                                                 |
 |------------------------|--------------|-----------------------------------------------------------------------|
 | `campaign_id`          | `int`        | ID của chiến dịch (chỉ có ở `/countforcampaign`)                     |
-| `click_or_view`        | `int`        | Phân loại hành vi: `0` là **view**, `1` là **click**                 |
+| `click_or_view`        | `string`        | Phân loại hành vi: `false` là **view**, `true` là **click**                 |
 | `estimated_user_count` | `int`        | Số lượng người dùng ước tính (sử dụng `uniqHLL12(guid)` trong ClickHouse) |
