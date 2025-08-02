@@ -44,7 +44,7 @@ top10AppIds.show(truncate = false)
 ## 2. Đọc dữ liệu từ PageViewMobile 
 ### Lấy dữ liệu từ hdfs về spark-shell 
 ```
-val df = spark.read.parquet("hdfs://adt-platform-dev-106-254:8120/data/Parquet/PageViewMobile/*")
+val df = spark.read.parquet("/data/Parquet/PageViewMobile/*")
 ```
 ### Thực hiện import thư viện spark.sql
 ```
@@ -78,7 +78,7 @@ top10Domainds.show(truncate = false)
 ## 3. Đọc dữ liệu từ PageViewV1 
 ### Lấy dữ liệu từ hdfs về spark-shell 
 ```
-val df = spark.read.parquet("hdfs://adt-platform-dev-106-254:8120/data/Parquet/PageViewV1/*")
+val df = spark.read.parquet("/data/Parquet/PageViewV1/*")
 ```
 ### Thực hiện import thư viện spark.sql
 ```
