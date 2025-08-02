@@ -153,6 +153,7 @@ Bucket rỗng thì giá trị tính toán sẽ là 0.
 Trong đó hệ số alpha sẽ có công thức tính riêng nhưng ta thường dùng một vài giá trị có sẵn để tính toán. Nếu số lượng bucket quá lớn thì sẽ dùng công thức để tính xấp xỉ.
 
 <img width="250" height="89" alt="image" src="https://github.com/user-attachments/assets/1004f598-3dfe-48d7-8a76-0e9e3ee19b0b" />
+
 ## Tạo app
 -Sử dụng python
 ```python
