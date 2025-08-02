@@ -28,7 +28,7 @@ for (dayPath <- dayDirs) {
   if (parquetFiles.isEmpty) {
     println(s"⚠️ Không có file parquet trong $day")
   } else {
-    val batchSize = 1
+    val batchSize = 10
     val fileGroups = parquetFiles.grouped(batchSize).toList
 
     var dayCounts = scala.collection.mutable.Map[String, Long]()
@@ -79,3 +79,4 @@ if (!runningTotalDF.isEmpty) {
   println("🚫 Không có dữ liệu được xử lý.")
 }
 }
+
