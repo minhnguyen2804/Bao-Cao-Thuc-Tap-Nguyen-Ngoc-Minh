@@ -249,9 +249,9 @@ Truy vấn số lượng người dùng ước tính theo `campaign_id`.
 - Nếu chỉ truyền 1 trong 2: lọc bằng đúng ngày đó.
 - Nếu không truyền gì: không lọc theo ngày.
 
-### 3.3 Ví dụ gọi API
+#### 3.3 Base Url
 - http://localhost:8000/countforcampaign?start_date=2024-12-11&end_date=2024-12-13
-### 3.4 Output
+#### 3.4 Output
 | Tên trường             | Kiểu dữ liệu | Mô tả                                                                 |
 |------------------------|--------------|-----------------------------------------------------------------------|
 | `campaign_id`          | `int`        | ID của chiến dịch (chỉ có ở `/countforcampaign`)                     |
