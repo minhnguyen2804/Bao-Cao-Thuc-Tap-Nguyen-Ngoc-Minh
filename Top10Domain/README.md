@@ -47,7 +47,7 @@ for (dayPath <- dayDirs) {
   if (parquetFiles.isEmpty) {
     println(s"⚠️ Không có file parquet trong $day")
   } else {
-    val batchSize = 1
+    val batchSize = 10
     val fileGroups = parquetFiles.grouped(batchSize).toList
 
     var dayCounts = scala.collection.mutable.Map[String, Long]()
@@ -89,7 +89,7 @@ for (dayPath <- dayDirs) {
 ```
 - **Vòng lặp qua các ngày**: Duyệt qua từng thư mục ngày.
 - **Lấy file Parquet**: Liệt kê các file `.parquet` trong thư mục ngày.
-- **Xử lý theo batch**: Chia file thành các nhóm (batch size = 1), xử lý từng nhóm để tránh tải toàn bộ dữ liệu cùng lúc.
+- **Xử lý theo batch**: Chia file thành các nhóm (batch size = 10), xử lý từng nhóm để tránh tải toàn bộ dữ liệu cùng lúc.
 - **Tính count**: Đọc file, chọn cột `appId`, nhóm và tính tổng (`count`), lưu vào `dayCounts` (Map mutable).
 - **Tạo DataFrame ngày**: Chuyển `dayCounts` thành DataFrame (`reducedDayDF`) và hiển thị.
 - **Cộng dồn**: Nếu `runningTotalDF` rỗng, gán `reducedDayDF`; nếu không, hợp nhất bằng cách cộng các giá trị `count` của `appId` giống nhau.
