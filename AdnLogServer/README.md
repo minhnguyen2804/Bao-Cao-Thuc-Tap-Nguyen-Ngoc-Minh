@@ -240,7 +240,7 @@ Truy vấn số lượng người dùng ước tính theo `campaign_id`.
 
 #### 3.2 Input
 
-| Tên tham số | Kiểu     | Bắt buộc | Mô tả                          |
+| Tên trường | Kiểu dữ liệu     | Bắt buộc | Mô tả                          |
 |-------------|----------|----------|---------------------------------|
 | `start_date`| `date`   | Không    | Ngày bắt đầu (YYYY-MM-DD)      |
 | `end_date`  | `date`   | Không    | Ngày kết thúc (YYYY-MM-DD)     |
