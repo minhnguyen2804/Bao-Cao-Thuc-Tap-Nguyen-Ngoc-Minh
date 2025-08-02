@@ -154,7 +154,7 @@ Trong đó hệ số alpha sẽ có công thức tính riêng nhưng ta thườn
 
 <img width="250" height="89" alt="image" src="https://github.com/user-attachments/assets/1004f598-3dfe-48d7-8a76-0e9e3ee19b0b" />
 
-## Tạo app
+## Tạo app (Chi tiết ở file main.py)
 -Sử dụng python
 ```python
 from fastapi import FastAPI, Query, HTTPException
