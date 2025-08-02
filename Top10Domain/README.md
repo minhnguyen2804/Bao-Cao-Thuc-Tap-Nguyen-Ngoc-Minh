@@ -1,3 +1,13 @@
+## Khởi chạy Spark-shell
+```
+/data/spark-3.4.3/bin/spark-shell --master yarn --deploy-mode client --num-executors 3 --executor-memory 1G
+```
+Trong đó
+- -- master yarn: chạy bằng yarn
+- --deploy-mode client: chạy mode client
+- --num-executor 3: Số lượng excutor là 3
+- --executor-memory 1G: cấp dung lượng cho bộ nhớ là 1G
+- 
 ## 1. Đọc dữ liệu từ PageViewApp 
 - Đọc dữ liệu Parquet từ thư mục `hdfs://adt-platform-dev-106-254:8120/data/Parquet/PageViewApp/` theo từng ngày (dựa trên tên thư mục kiểu `YYYY_MM_DD`).
 - Tính số lần xuất hiện (`count`) của mỗi `appId` trong mỗi ngày.
